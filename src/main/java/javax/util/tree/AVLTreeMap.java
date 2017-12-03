@@ -1,4 +1,4 @@
-package javax.utl.tree;
+package javax.util.tree;
 
 import javafx.util.Pair;
 

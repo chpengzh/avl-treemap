@@ -3,7 +3,6 @@ package javax.util.tree;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 
-import javax.utl.tree.AVLTreeMap;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -95,19 +94,15 @@ public class AVLTreeTest {
     @Test
     public void t07RandomRemove() {
         Set<Long> contains = new HashSet<>();
-        for (long i = 0; i < 512L * 512L; i++) {
+        for (long i = 0; i < 256L * 256L; i++) {
             long next = rand.nextLong();
             map.put(next, next);
             contains.add(next);
         }
-        for (int i = 0; i < 1024L * 1024L; i++) {
+        for (int i = 0; i < 512L * 512L; i++) {
             Long next = rand.nextLong();
-            if (contains.contains(next)) {
-                Assert.assertEquals(next, map.remove(next));
-            } else {
-                Assert.assertEquals(null, map.remove(next));
-            }
-            contains.remove(next);
+            Long value = map.remove(next);
+            Assert.assertEquals(contains.remove(next) ? next : null, value);
         }
     }
 
@@ -139,10 +134,10 @@ public class AVLTreeTest {
         int offset = rand.nextInt(10);
         int limit = rand.nextInt(10);
         List<Long> keys = new ArrayList<>(contains.keySet());
-        keys.sort(Long::compareTo);
+        keys.sort(Comparator.reverseOrder());
         Iterator<Map.Entry<Long, Long>> top = map.max(offset, limit).entrySet().iterator();
-        for (int i = 0; i < offset + limit && i < keys.size(); i++) {
-            Long key = contains.get(keys.get(keys.size() - i - 1));
+        for (int i = offset; i < offset + limit && i < keys.size(); i++) {
+            Long key = contains.get(keys.get(i));
             Map.Entry<Long, Long> result = top.next();
             Assert.assertEquals(key, result.getKey());
             Assert.assertEquals(contains.get(key), result.getValue());
